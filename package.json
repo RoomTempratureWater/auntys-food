@@ -1,0 +1,9 @@
+{
+  "name": "aunty-meals-root",
+  "private": true,
+  "workspaces": [
+    "web",
+    "bot",
+    "db"
+  ]
+}

@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AdminUser {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+}
+
+model User {
+  id               Int            @id @default(autoincrement())
+  phone_number     String         @unique
+  name             String
+  diet_type        String         @default("veg") // "veg", "nonveg", or "egg"
+  address          String
+  has_preferences  Boolean        @default(false)
+  preferences_text String?
+  meal_balance     Int            @default(0)
+  is_active        Boolean        @default(true)
+  created_at       DateTime       @default(now())
+  updated_at       DateTime       @updatedAt
+  
+  MealSchedule     MealSchedule[]
+  Payment          Payment[]
+  BalanceTransaction BalanceTransaction[]
+}
+
+model MealSchedule {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  date       DateTime @db.Date
+  type       String   // "lunch" or "dinner"
+  status     String   // "booked" or "skipped"
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user       User     @relation(fields: [user_id], references: [id])
+}
+
+model Payment {
+  id             Int      @id @default(autoincrement())
+  user_id        Int
+  amount         Float
+  screenshot_url String
+  status         String   // "pending" or "approved"
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  user           User     @relation(fields: [user_id], references: [id])
+}
+
+model BalanceTransaction {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  amount     Int      // positive = added, negative = removed
+  reason     String   // e.g. "Monthly recharge", "Correction", "Meal deducted"
+  created_at DateTime @default(now())
+
+  user       User     @relation(fields: [user_id], references: [id])
+}
