@@ -1,7 +1,9 @@
 # --- 1. BASE STAGE ---
-# This sets up the foundation, installs dependencies, and generates Prisma
-FROM node:20-alpine AS base
+FROM node:20-slim AS base
 WORKDIR /app
+
+# Install OpenSSL for Prisma client compatibility
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 # Copy root workspace configuration
 COPY package*.json ./
@@ -21,11 +23,9 @@ RUN npm run generate
 
 
 # --- 2. WEB TARGET ---
-# Coolify will build this specifically for your 'web' service
 FROM base AS web
 WORKDIR /app/web
 
-# Force Next.js to build for production and bind to 0.0.0.0 (Fixes Traefik routing)
 ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
@@ -33,22 +33,18 @@ ENV PORT=3000
 # Build the Next.js application
 RUN npm run build
 
-# Explicitly expose the port for the reverse proxy
 EXPOSE 3000
 
-# Start the optimized Next.js production server
+# Start the Next.js production server
 CMD ["npm", "start"]
 
 
 # --- 3. BOT TARGET ---
-# Coolify will build this specifically for your 'bot' service
 FROM base AS bot
 WORKDIR /app/bot
 
 ENV NODE_ENV=production
 
-# Compile the bot (if you have a build script for TypeScript)
 RUN npm run build --if-present
 
-# Start the bot
 CMD ["npm", "start"]
