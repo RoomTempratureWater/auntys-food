@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const config: NextConfig = {
+  allowedDevOrigins: [
+    'aunty.roomtempwater.top',
+    'aunty2.site.top'
+  ],
+  // ... any other config options
 };
 
-export default nextConfig;
+export default config;
