@@ -39,7 +39,7 @@ RUN npm run build
 EXPOSE 3000
 
 # Push schema to live DB on boot, then start Next.js
-CMD ["sh", "-c", "cd /app/db && npx prisma db push --accept-data-loss && cd /app/web && npm start"]
+CMD ["sh", "-c", "cd /app/db && npx prisma migrate deploy --accept-data-loss && cd /app/web && npm start"]
 
 
 # --- 3. BOT TARGET ---
