@@ -1,0 +1,25 @@
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  web:
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/app/web
+      - ./db:/app/db
+      - /app/node_modules
+      - /app/web/node_modules
+
+  bot:
+    volumes:
+      - ./bot:/app/bot
+      - ./db:/app/db
+      - /app/node_modules
+      - /app/bot/node_modules
+
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
