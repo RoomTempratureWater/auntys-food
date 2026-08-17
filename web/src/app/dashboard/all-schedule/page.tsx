@@ -2,6 +2,7 @@ import { prisma } from 'db';
 import { Sun, Moon, Printer } from 'lucide-react';
 import Link from 'next/link';
 import DietBadge from '@/components/DietBadge';
+import DatePicker from '@/components/DatePicker';
 
 
 function DietSummary({ bookings, title }: { bookings: { user: { diet_type: string } }[], title: string }) {
@@ -32,10 +33,17 @@ function DietSummary({ bookings, title }: { bookings: { user: { diet_type: strin
   );
 }
 
-export default async function SchedulePage() {
-  // Always use today's local date string
+export default async function SchedulePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) {
+  const { date } = await searchParams;
+  
+  // If no date provided, use today's local date string
   const now = new Date();
-  const targetDateStr = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+  const localToday = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+  const targetDateStr = date || localToday;
 
   // The database stores the date as UTC midnight
   const targetDate = new Date(`${targetDateStr}T00:00:00Z`);
@@ -65,12 +73,13 @@ export default async function SchedulePage() {
     <div className="space-y-6 pb-20">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-medium text-zinc-500 dark:text-zinc-400">Daily Schedule</h2>
-          <p className="text-3xl sm:text-4xl font-extrabold text-orange-600 dark:text-orange-400 mt-2 tracking-tight">
+          <h2 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">All Schedule</h2>
+          <p className="text-zinc-500 dark:text-zinc-400 mt-1">
             {targetDate.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <DatePicker defaultDate={targetDateStr} />
           <Link 
             href={`/print?date=${targetDateStr}`}
             className="flex items-center gap-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 px-4 py-2 rounded-xl transition-colors dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 font-medium text-sm"
@@ -84,10 +93,10 @@ export default async function SchedulePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Lunch Column */}
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-orange-50/50 dark:bg-orange-500/5">
+          <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-teal-50/50 dark:bg-teal-500/5">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 rounded-lg">
+                <div className="p-2 bg-teal-100 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400 rounded-lg">
                   <Sun className="w-5 h-5" />
                 </div>
                 <h3 className="font-semibold text-zinc-900 dark:text-white">Lunch Deliveries</h3>
@@ -126,10 +135,10 @@ export default async function SchedulePage() {
 
         {/* Dinner Column */}
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-indigo-50/50 dark:bg-indigo-500/5">
+          <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-fuchsia-50/50 dark:bg-fuchsia-500/5">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                <div className="p-2 bg-fuchsia-100 dark:bg-fuchsia-500/20 text-fuchsia-600 dark:text-fuchsia-400 rounded-lg">
                   <Moon className="w-5 h-5" />
                 </div>
                 <h3 className="font-semibold text-zinc-900 dark:text-white">Dinner Deliveries</h3>

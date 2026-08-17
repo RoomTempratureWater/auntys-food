@@ -34,3 +34,6 @@
 - [ ] Connect bot actions to database
 - [ ] Connect web dashboard to real database data
 - [ ] Test end-to-end flows
+
+## Future Upgrades
+- [ ] Create an on-demand web link for a visual calendar view (from Telegram bot)

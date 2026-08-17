@@ -15,6 +15,7 @@ model AdminUser {
 model User {
   id               Int            @id @default(autoincrement())
   phone_number     String         @unique
+  telegram_chat_id String?        @unique
   name             String
   diet_type        String         @default("veg") // "veg", "nonveg", or "egg"
   address          String
