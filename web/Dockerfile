@@ -2,7 +2,7 @@
 FROM node:20-slim AS base
 WORKDIR /app
 
-# OpenSSL + build tools for native node bindings
+# Install OpenSSL, build tools, and native dependencies
 RUN apt-get update -y && apt-get install -y openssl python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 # Copy root workspace configuration
@@ -11,13 +11,13 @@ COPY web/package.json ./web/
 COPY bot/package.json ./bot/
 COPY db/package.json ./db/
 
-# Force installation of platform-specific optional binaries
-RUN npm install --include=optional
+# Install dependencies including linux-x64 native binaries
+RUN npm install --include=optional --os=linux --cpu=x64
 
 # Copy all source code
 COPY . .
 
-# Generate Prisma client
+# Generate Prisma Client for builds
 WORKDIR /app/db
 RUN npm run generate
 
@@ -30,16 +30,16 @@ ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
 
-# Remove any leftover local .next build cache copied into the image
+# Remove any stale dev cache
 RUN rm -rf .next
 
-# Build Next.js in production mode
+# Build production Next.js application
 RUN npm run build
 
 EXPOSE 3000
 
-# Run production server
-CMD ["npm", "start"]
+# Push schema to live DB on boot, then start Next.js
+CMD ["sh", "-c", "cd /app/db && npx prisma db push --accept-data-loss && cd /app/web && npm start"]
 
 
 # --- 3. BOT TARGET ---
