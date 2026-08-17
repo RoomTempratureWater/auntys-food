@@ -1,4 +1,4 @@
-import { ChefHat, LayoutDashboard, Users, CalendarDays, LogOut, Settings } from 'lucide-react';
+import { ChefHat, LayoutDashboard, Users, CalendarDays, Calendar, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { logout } from '@/app/actions/auth';
 
@@ -28,6 +28,10 @@ export default function DashboardLayout({
           <Link href="/dashboard/schedule" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-800 transition-colors">
             <CalendarDays className="w-4 h-4" />
             Daily Schedule
+          </Link>
+          <Link href="/dashboard/all-schedule" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-800 transition-colors">
+            <Calendar className="w-4 h-4" />
+            All Schedule
           </Link>
           <Link href="/dashboard/users" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-800 transition-colors">
             <Users className="w-4 h-4" />
